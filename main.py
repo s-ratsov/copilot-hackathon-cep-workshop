@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
 CHOICES = ("rock", "paper", "scissors", "lizard", "spock")
+VALID_BEST_OF = (1, 3, 5)
 WINNING_MATCHUPS = {
 	"rock": {"scissors", "lizard"},
 	"paper": {"rock", "spock"},
@@ -94,6 +95,81 @@ def prompt_user_choice(input_func=input, print_func=print):
 	return normalize_choice(raw)
 
 
+def rounds_to_win(best_of):
+	if best_of not in VALID_BEST_OF:
+		raise ValueError("Best-of value must be 1, 3, or 5.")
+	return (best_of // 2) + 1
+
+
+def prompt_best_of(input_func=input, print_func=print):
+	print_func("Choose match length:")
+	print_func("1. Best of 1")
+	print_func("2. Best of 3")
+	print_func("3. Best of 5")
+	raw = input_func("Enter 1, 3, or 5 (or menu number 1-3): ").strip()
+
+	mapping = {
+		"1": 1,
+		"2": 3,
+		"3": 5,
+		"5": 5,
+	}
+
+	if raw in mapping:
+		best_of = mapping[raw]
+	else:
+		try:
+			best_of = int(raw)
+		except ValueError as exc:
+			raise ValueError("Invalid match length.") from exc
+
+	if best_of not in VALID_BEST_OF:
+		raise ValueError("Best-of value must be 1, 3, or 5.")
+	return best_of
+
+
+def play_match(best_of, input_func=input, print_func=print, rng=None):
+	needed_wins = rounds_to_win(best_of)
+	user_wins = 0
+	computer_wins = 0
+	round_number = 1
+
+	while user_wins < needed_wins and computer_wins < needed_wins:
+		print_func(f"\nRound {round_number} (Best of {best_of})")
+
+		while True:
+			try:
+				user_choice = prompt_user_choice(input_func=input_func, print_func=print_func)
+				break
+			except ValueError as exc:
+				print_func(f"Invalid input: {exc}")
+
+		result = play_round(user_choice, rng=rng)
+		print_func(f"You chose: {result['user_choice']}")
+		print_func(f"Computer chose: {result['computer_choice']}")
+		print_func(result["message"])
+
+		if result["outcome"] == "win":
+			user_wins += 1
+			round_number += 1
+		elif result["outcome"] == "lose":
+			computer_wins += 1
+			round_number += 1
+		else:
+			print_func("Tie round: score stays the same, replaying this round.")
+
+		print_func(f"Score -> You: {user_wins} | Computer: {computer_wins}")
+
+	game_winner = "user" if user_wins > computer_wins else "computer"
+	return {
+		"best_of": best_of,
+		"needed_wins": needed_wins,
+		"user_wins": user_wins,
+		"computer_wins": computer_wins,
+		"winner": game_winner,
+	}
+
+
 def parse_choice_from_path(path):
 	path_choice = path.lstrip("/").strip().lower()
 	if path_choice in CHOICES:
@@ -160,15 +236,20 @@ def run_api(host="127.0.0.1", port=8000):
 def main():
 	print("Welcome to Rock, Paper, Scissors, Lizard, Spock!")
 	try:
-		user_choice = prompt_user_choice()
+		best_of = prompt_best_of()
 	except ValueError as exc:
 		print(f"Invalid input: {exc}")
 		return
 
-	result = play_round(user_choice)
-	print(f"You chose: {result['user_choice']}")
-	print(f"Computer chose: {result['computer_choice']}")
-	print(result["message"])
+	match_result = play_match(best_of)
+	print("\nFinal Result")
+	print(f"Best of: {match_result['best_of']}")
+	print(f"Final Score -> You: {match_result['user_wins']} | Computer: {match_result['computer_wins']}")
+	if match_result["winner"] == "user":
+		print("Game winner: You")
+	else:
+		print("Game winner: Computer")
+	print("Game over.")
 
 
 def parse_args():

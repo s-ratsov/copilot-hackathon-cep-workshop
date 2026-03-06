@@ -67,6 +67,25 @@ class TestGameLogic(unittest.TestCase):
         with self.assertRaises(ValueError):
             main.parse_choice_from_body(json.dumps({"move": "rock"}).encode("utf-8"))
 
+    def test_rounds_to_win(self):
+        self.assertEqual(main.rounds_to_win(1), 1)
+        self.assertEqual(main.rounds_to_win(3), 2)
+        self.assertEqual(main.rounds_to_win(5), 3)
+
+        with self.assertRaises(ValueError):
+            main.rounds_to_win(7)
+
+    def test_play_match_best_of_three_user_wins(self):
+        inputs = iter(["1", "1", "1"])
+
+        def fake_input(_):
+            return next(inputs)
+
+        result = main.play_match(3, input_func=fake_input, print_func=lambda *_: None, rng=StubRng("scissors"))
+        self.assertEqual(result["winner"], "user")
+        self.assertEqual(result["user_wins"], 2)
+        self.assertEqual(result["computer_wins"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

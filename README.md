@@ -27,6 +27,11 @@ python3 main.py
 You will see:
 
 ```text
+Choose match length:
+1. Best of 1
+2. Best of 3
+3. Best of 5
+
 Choose your option:
 1. Rock
 2. Paper
@@ -37,8 +42,16 @@ Choose your option:
 
 You can enter either:
 
+- Match length: `1`, `3`, or `5` (or menu option `1`, `2`, `3`)
 - A number (`1` to `5`)
 - A choice name (`rock`, `paper`, `scissors`, `lizard`, or `spock`)
+
+The game will then:
+
+- Announce the winner of each round.
+- Show the running score after each round.
+- Continue until one side wins the selected best-of match.
+- Announce the final game winner and exit.
 
 ### Play via REST API
 

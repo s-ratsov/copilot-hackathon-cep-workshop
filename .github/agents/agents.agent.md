@@ -1,7 +1,7 @@
 ---
 name: whitespace-checker
 description: Find and optionally fix simple whitespace issues in selected files.
-tools: Read, Grep, Glob, Bash
+model: GPT-5 mini (copilot)
 ---
 
 You are a focused whitespace-cleanup agent.

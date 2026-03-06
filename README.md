@@ -12,6 +12,83 @@ Participants will be guided to install the GitHub Copilot VS Code extension, fol
 
 Depending on the time available, participants will be able to complete the game or just get started, from a simple version all the way to introducing additional logic to make the game more interesting complete, with unit tests and REST API endpoints.
 
+## How To Play
+
+This repository now includes the extended **Rock, Paper, Scissors, Lizard, Spock** version of the game.
+
+### Play in the terminal (CLI mode)
+
+Run:
+
+```bash
+python3 main.py
+```
+
+You will see:
+
+```text
+Choose your option:
+1. Rock
+2. Paper
+3. Scissors
+4. Lizard
+5. Spock
+```
+
+You can enter either:
+
+- A number (`1` to `5`)
+- A choice name (`rock`, `paper`, `scissors`, `lizard`, or `spock`)
+
+### Play via REST API
+
+Start the API server:
+
+```bash
+python3 main.py --mode api --host 127.0.0.1 --port 8000
+```
+
+Send a move using JSON:
+
+```bash
+curl -X POST http://127.0.0.1:8000/play \
+  -H "Content-Type: application/json" \
+  -d '{"choice":"rock"}'
+```
+
+Or use path-based endpoints:
+
+```bash
+curl -X POST http://127.0.0.1:8000/rock
+curl -X POST http://127.0.0.1:8000/paper
+curl -X POST http://127.0.0.1:8000/scissors
+curl -X POST http://127.0.0.1:8000/lizard
+curl -X POST http://127.0.0.1:8000/spock
+```
+
+### Run tests
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+### Winning logic (who beats who)
+
+Each round compares your choice with the computer's choice.
+
+- If both choices are the same, the result is a **tie**.
+- Otherwise, each choice beats exactly two others:
+  - **Rock** beats **Scissors** and **Lizard**
+  - **Paper** beats **Rock** and **Spock**
+  - **Scissors** beats **Paper** and **Lizard**
+  - **Lizard** beats **Paper** and **Spock**
+  - **Spock** beats **Rock** and **Scissors**
+
+Result rules:
+
+- If the computer's move is in the list your move beats, you **win**.
+- If not (and it is not a tie), the computer **wins**.
+
 
 
 ## Instructions 

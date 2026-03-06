@@ -28,16 +28,16 @@ You will see:
 
 ```text
 Choose match length:
-1. Best of 1
-2. Best of 3
-3. Best of 5
+  1) Best of 1
+  2) Best of 3
+  3) Best of 5
 
-Choose your option:
-1. Rock
-2. Paper
-3. Scissors
-4. Lizard
-5. Spock
+Choose your move:
+  1) Rock
+  2) Paper
+  3) Scissors
+  4) Lizard
+  5) Spock
 ```
 
 You can enter either:
@@ -123,13 +123,17 @@ If you're planning to run a GitHub Copilot workshop, please review the [workshop
 
 ## Project Structure
 
-In this project you will find: 
+In this project you will find:
 
-* a `main.py` file with no contents
+* `main.py` as the app entrypoint (routes to CLI or API mode)
+* `game_logic.py` with shared Rock/Paper/Scissors/Lizard/Spock rules and round logic
+* `terminal_game.py` with interactive terminal game flow and terminal formatting
+* `api_game.py` with REST API request parsing and HTTP handler/server logic
+* `tests/test_game.py` with unit tests for game behavior
 * a devcontainer that installs CodeTour and GitHub Copilot when the Codespace is created (If you want to use Codespaces)
-* an `.instructions` folder all the instructions for this workshop.
-* an `assets` folder containing images used in this workshop documentation.
-* a `.tours` folder that includes the CodeTour file if you wish to use it.
+* an `.instructions` folder with workshop guidance
+* an `assets` folder containing images used in this workshop documentation
+* a `.tours` folder that includes the CodeTour file if you wish to use it
 
 
 
